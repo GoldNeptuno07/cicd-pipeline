@@ -24,5 +24,6 @@ pipeline {
             steps {
                 sh("echo Deploying to app...")
             }
+        }
     }
 }
