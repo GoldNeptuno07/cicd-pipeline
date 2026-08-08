@@ -30,8 +30,9 @@ pipeline {
 
         stage("Deploy") {
             steps {
-                sh("echo Deploying to app...")
-                sh("docker rm -f \$(docker ps -aq --filter ancestor=nodedev:v1.0)")
+                sh("echo Deploying app...")
+                sh("chmod +x ./prune_containers.sh")
+                sh("./prune_containers.sh nodedev:v1.0")
                 sh("docker run -d --expose=3000 -p 3001:3000 nodedev:v1.0")
                 sh("docker ps | grep nodedev")
             }
