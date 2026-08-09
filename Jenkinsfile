@@ -8,32 +8,33 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh("echo Building service...")
-                sh("npm install")
+                echo "Building service..."
+                sh "npm install"
             }
         }
 
         stage("Test") {
             steps {
-                sh("echo Testing service...")
-                sh("npm test")
+                echo "Testing service..."
+                sh "npm test"
             }
         }
 
         stage("Docker Build") {
             steps {
-                sh("echo Building docker image...")
-                sh("docker build -t nodemain:v1.0 .")
-                sh("docker images | grep nodemain")
+                echo "Building docker image..."
+                sh "docker build -t nodemain:v1.0 ."
+                sh "docker images | grep nodemain"
             }
         }
 
         stage("Deploy") {
             steps {
-                sh("echo Deploying to app...")
-                sh("docker rm -f \$(docker ps -aq --filter ancestor=nodemain:v1.0)")
-                sh("docker run -d --expose=3000 -p 3001:3000 nodemain:v1.0")
-                sh("docker ps | grep nodemain")
+                echo "Deploying app..."
+                sh "chmod +x ./prune_containers.sh"
+                sh "./prune_containers.sh nodemain:v1.0"
+                sh "docker run -d --expose=3000 -p 3000:3000 nodemain:v1.0"
+                sh "docker ps | grep nodemain"
             }
         }
     }
